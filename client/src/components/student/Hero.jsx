@@ -2,6 +2,7 @@ import React from 'react'
 import { assets } from '../../assets/assets'
 import SearchBar from './SearchBar'
 
+
 const Hero = () => {
   return (
     <div className='flex flex-col items-center  justify-center w-full md:pt-36 pt-20 px-7 md:px-0 pace-y-7 text-center bg-gardient-to-b fro-cyan-100/70'>
