@@ -84,7 +84,7 @@ const toggleSection = (index)=>{
                               <p>{lecture.lectureTitle}</p>
                               <div className='flex gap-2'>
                                 {lecture.isPreviewFree && <p 
-                                onClick={()=> setPlayerData({
+                                onclick={()=> setPlayerData({
 
                                   videoId: lecture.lectureUrl.split('/').pop()
 
