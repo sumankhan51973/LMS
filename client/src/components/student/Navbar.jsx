@@ -14,7 +14,7 @@ const isCourseListPage = location.pathname.includes('/course-list');
     <div className={`flex items-center justify-between px-4 sm:px-10 md:px-14 lg:px-36 border-b border-gray-500 py-4 ${isCourseListPage ? 'bg-white' : 'bg-cyan-100/70'}`}>
 
 
-            <div
+      <div
         className="flex items-center gap-2 cursor-pointer"
         onClick={() => navigate("/")}>
         {/* ✅ Free Education Logo (replace with your own later if you want) */}
@@ -30,7 +30,7 @@ const isCourseListPage = location.pathname.includes('/course-list');
       <div className='hidden md:flex items-center gap-5 text-gray-500'>
         <div className='flex items-center gap-5'>
           <button onClick={()=> {navigate('/educator')}}>{isEducator ? 'Educator Dashboard' : 'Become Educator'} </button>
-          <Link to='/my-enrolements'>My Enrollments</Link>
+          <Link to='/my-enrollments'>My Enrollments</Link>
         </div>
         <button className='bg-cyan-600 text-white px-5 py-2 rounded-full hover:bg-cyan-800 transition duration-300 ease-in-out'>
           Create Account

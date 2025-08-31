@@ -5,7 +5,7 @@ import Loading from '../../components/student/Loading'
 import { assets } from '../../assets/assets'
 import humanizeDuration from 'humanize-duration'
 import Footer from '../../components/student/Footer'
-import Youtube from 'react-youtube'
+import YouTube from 'react-youtube'
 
 
 
@@ -84,12 +84,12 @@ const toggleSection = (index)=>{
                               <p>{lecture.lectureTitle}</p>
                               <div className='flex gap-2'>
                                 {lecture.isPreviewFree && <p 
-                                onclick={()=> setPlayerData({
+                                onClick={()=> setPlayerData({
 
                                   videoId: lecture.lectureUrl.split('/').pop()
 
                                 })}
-                                className='text-blue-500 cursor-pointer'>Prewiew</p>}
+                                className='text-blue-500 cursor-pointer'>Preview</p>}
                                 <p>{humanizeDuration(lecture.lectureDuration * 60 * 1000, {units: ['h' , 'm']})}</p>
                               </div>
                             </div>
@@ -114,7 +114,7 @@ const toggleSection = (index)=>{
 
         {
             playerData ?
-            <Youtube videoId={playerData.videoId} opts={{playerVars: { autoplay: 1 }}} iframeClassName='w-full aspect-video'/>
+            <YouTube videoId={playerData.videoId} opts={{playerVars: { autoplay: 1 }}} iframeClassName='w-full aspect-video'/>
             : <img src={courseData.courseThumbnail} alt="" />
         }
         <div className='p-5'>
@@ -150,8 +150,8 @@ const toggleSection = (index)=>{
 
           </div>
 
-          <button className='md:mt-6 mt-4 w-full py-3 rounded bg-blue-600 text-white font-medium'>{isAlreadyEnrolled ? 'Already Enrolled' : 'Enrolle Now'}</button>
-          <div calssName='pt-6'>
+          <button className='md:mt-6 mt-4 w-full py-3 rounded bg-blue-600 text-white font-medium'>{isAlreadyEnrolled ? 'Already Enrolled' : 'Enroll Now'}</button>
+          <div className='pt-6'>
             <p className='md:text-xl text-lg font-medium text-gray-800'>What's in the course?</p>
             <ul className='ml-4 pt-2 text-sm md:text-default list-disc text-gray-500'>
               <li>Lifetime access with free updates.</li>
