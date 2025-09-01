@@ -34,7 +34,7 @@ const MyCourses = () => {
               {courses.map((course) => (
                 <tr key={course._id} className="border-b border-gray-500/20">
                   <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
-                    <img src={course.courseThumbnail} alt="Course Image" className="w-18" />
+                    <img src={course.courseThumbnail} alt="Course Image" className="w-16" />
                     <span className="truncate hidden md:block">{course.courseTitle}
                     </span>
                   </td>
