@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { AppContext } from '../../context/AppContext'
 import {Line} from 'rc-progress'
 import Footer from '../../components/student/Footer'
+import Loading from '../../components/student/Loading'
 
 const MyEnrollments = () => {
 
@@ -22,6 +23,10 @@ const MyEnrollments = () => {
     {lectureCompleted: 0, totalLetures: 2},
     {lectureCompleted: 5, totalLetures: 5}
   ])
+
+    if (!enrolledCourses || enrolledCourses.length === 0) {
+    return <Loading />
+  }
 
   return (
   <>

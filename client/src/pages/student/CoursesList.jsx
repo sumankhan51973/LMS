@@ -5,12 +5,14 @@ import { useParams } from 'react-router-dom'
 import CourseCard from '../../components/student/CourseCard'
 import { assets } from '../../assets/assets'
 import Footer from '../../components/student/Footer'
+import Loading from '../../components/student/Loading'
 
 const CoursesList = () => {
 
   const {navigate, allCourses} = useContext(AppContext)
   const {input} = useParams()
   const [filteredCourse, setFilteredCourse] = useState([])
+  const [loading, setLoading] = useState(true) // 👈 state for loading
 
   useEffect(()=>{
     if(allCourses && allCourses.length > 0){
@@ -23,8 +25,15 @@ const CoursesList = () => {
         )
       )
       : setFilteredCourse(tempCourses)
+
+       setLoading(false) // 👈 stop loading after data is ready
     }
   },[allCourses, input])
+
+   // 👇 Show loader if still loading
+  if (loading) {
+    return <Loading />
+  }
 
   return (
     <>
