@@ -20,7 +20,7 @@ const Navbar = () => {
           </div>
        </Link>
        <div className="flex items-center gap-5 text-gray-500 relative">
-        <p>Hi! {user ? user.fullName : 'Developers'}</p>
+        <p>Hi! {user ? user.fullName : 'Educator'}</p>
         {user ? <userButton /> : <img className='max-w-8' src={assets.profile_img} />}
        </div>
       </div>

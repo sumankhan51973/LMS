@@ -66,9 +66,9 @@ const Player = () => {
                               <p>{lecture.lectureTitle}</p>
                               <div className='flex gap-2'>
                                 {lecture.lectureUrl && <p 
-                                onClick={()=> setPlayerData({
+                                onCLick={()=> setPlayerData({
                                   ...lecture, chapter: index + 1, lecture: i+1
-                                })}
+                                })}  // Changed
                                 className='text-blue-500 cursor-pointer'>Watch</p>}
                                 <p>{humanizeDuration(lecture.lectureDuration * 60 * 1000, {units: ['h' , 'm']})}</p>
                               </div>
