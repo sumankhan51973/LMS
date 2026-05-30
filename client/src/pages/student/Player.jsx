@@ -21,19 +21,19 @@ const Player = () => {
   const [progressData, setProgressData] = useState(null)
   const [initialRating, setInitialRating] = useState(0)
 
+const getCourseData = () => {
+  enrolledCourses.map((course) => {
+    if (course._id === courseId) {
+      setCourseData(course)
 
-  const getCourseData = ()=>{
-    enrolledCourses.map((course)=>{
-      if(course._id === courseId){
-        setCourseData(course)
-        course.courseRating.map((item)=>{
-          if(item.userData === userData._id) {
+      ;(course.courseRatings || []).map((item) => {
+        if (item.userData === userData._id) {
           setInitialRating(item.rating)
-          }
-        })
-      }
-    })
-  }
+        }
+      })
+    }
+  })
+}
 
   const toggleSection = (index)=>{
   setOpenSections((prev)=>(
@@ -67,7 +67,7 @@ const Player = () => {
   }
   const getCourseProgress = async () => {
     try {
-      const token = getToken();
+      const token = await getToken();
       const {data} = await axios.post(`${backendUrl}/api/user/get-course-progress`, {courseId}, {headers: {Authorization: `Bearer ${token}`}})
       
       if(data.success) {
@@ -99,6 +99,22 @@ const handleRate = async (rating) => {
 useEffect(() => {
   getCourseProgress()
 },[])
+
+const getYoutubeVideoId = (url) => {
+  try {
+    const parsedUrl = new URL(url)
+
+    // youtu.be format
+    if (parsedUrl.hostname.includes('youtu.be')) {
+      return parsedUrl.pathname.slice(1)
+    }
+
+    // youtube.com/watch?v=
+    return parsedUrl.searchParams.get('v')
+  } catch (error) {
+    return null
+  }
+}
 
   return courseData ? (
   <>
@@ -153,7 +169,10 @@ useEffect(() => {
        {/* right column */}
       <div className='md:mt-10'>
         {playerData ? (
-          <div><YouTube videoId={playerData.lectureUrl.split('/').pop()} iframeClassName='w-full aspect-video'/>
+          <div><YouTube
+               videoId={getYoutubeVideoId(playerData.lectureUrl)}
+               iframeClassName='w-full aspect-video'
+               />
           <div className='flex justify-between items-center mt-1'>
             <p>
               {playerData.chapter}.{playerData.lecture} {playerData.lectureTitle}

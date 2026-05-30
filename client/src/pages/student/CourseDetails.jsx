@@ -96,7 +96,10 @@ const toggleSection = (index)=>{
             </div>
                 <p className='text-blue-600'>({courseData.courseRatings.length} {courseData.courseRatings.length > 1 ? 'ratings' : 'rating'})</p>
 
-                <p>{courseData.enrolledStudents.length} {courseData.enrolledStudents.length > 1 ? 'students': 'student'}</p>
+              <p>
+  {courseData.courseRatings?.length || 0}{" "}
+  {courseData.courseRatings?.length === 1 ? "student" : "students"}
+</p>
             </div>
             <p className='text-sm'>Course by <span className='text-blue-600'>{courseData.educator.name}</span></p>
 

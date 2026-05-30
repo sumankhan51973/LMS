@@ -53,15 +53,34 @@ export const addCourse = async (req, res) => {
 
 // Get Educator Courses
 
-export const getEducatorCourses = async (req, res)=>{
-    try {
-        const educator = req.auth().userId
+export const getEducatorCourses = async (req, res) => {
+  try {
+    const educator = req.auth().userId;
 
-        const courses = await Course.find({ educator})
-        res.json({ success: true, courses })
-    } catch (error) {
-        res.json({ success: false, message: error.message })
-    }
+    const courses = await Course.find({ educator });
+
+    const updatedCourses = await Promise.all(
+      courses.map(async (course) => {
+        const students = await User.find(
+          { enrolledCourses: course._id },
+          'name imageUrl'
+        );
+
+        return {
+          ...course.toObject(),
+          enrolledStudents: students
+        };
+      })
+    );
+
+    res.json({
+      success: true,
+      courses: updatedCourses
+    });
+
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
 }
 
 //Get Educator Dashboard Data (Total Earning, Enrolled Students, No. of Courses )
@@ -81,19 +100,21 @@ export const educatorDashboardData = async (req, res) => {
 
         //collect unique enrolled students IDs with their course titles 
 
-        const enrolledStudentsData = [];
-        for (const course of courses) {
-            const students = await User.find({
-                _id: {$in: course.enrolledStudents}
-            }, 'name imageUrl');
+       const enrolledStudentsData = [];
 
-            students.forEach(student => {
-                enrolledStudentsData.push({
-                    courseTitle: course.courseTitle,
-                    student
-                });
-            });
-        }
+for (const course of courses) {
+    const students = await User.find(
+        { enrolledCourses: course._id },
+        'name imageUrl'
+    );
+
+    students.forEach(student => {
+        enrolledStudentsData.push({
+            courseTitle: course.courseTitle,
+            student
+        });
+    });
+}
 
         res.json({ success: true, dashboardData: {
             totalEarnings, enrolledStudentsData, totalCourses

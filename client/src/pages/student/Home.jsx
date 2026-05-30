@@ -2,6 +2,8 @@ import React from 'react'
 import Hero from '../../components/student/Hero'
 import Comapanies from '../../components/student/Comapanies'
 import CoursesSection from '../../components/student/CoursesSection'
+import CallToAction from '../../components/student/CallToAction'
+import Footer from '../../components/student/Footer'
 
 const Home = () => {
   return (
@@ -9,6 +11,8 @@ const Home = () => {
       <Hero />
       <Comapanies />
       <CoursesSection />
+      <CallToAction />
+      <Footer/>
     </div>
   )
 }
