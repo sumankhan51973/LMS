@@ -9,7 +9,14 @@ import { useLocation } from 'react-router-dom'
 
 const Navbar = () => { 
 
-  const {navigate, isEducator, backendUrl, setIsEducator, getToken} = useContext(AppContext)
+  const {
+  navigate,
+  isEducator,
+  backendUrl,
+  getToken,
+  educatorRequestStatus,
+  fetchEducatorRequest,
+} = useContext(AppContext);
 
 const location = useLocation()
 
@@ -18,24 +25,36 @@ const isCourseListPage = location.pathname.includes('/course-list');
 const {openSignIn} = useClerk()
 const {user} = useUser()
 
-const becomeEducator = async ()=>{
+const becomeEducator = async () => {
   try {
-    if(isEducator){
-      navigate('/educator')
+    if (isEducator) {
+      navigate("/educator");
       return;
     }
-    const token = await getToken()
-    const { data } = await axios.get(backendUrl + '/api/educator/update-role', {headers : {Authorization : `Bearer ${token}`}})
+
+    const token = await getToken();
+
+    const { data } = await axios.post(
+      backendUrl + "/api/educator/request",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (data.success) {
-      setIsEducator(true)
-      toast.success(data.message)
+      toast.success(data.message);
+
+      // Refresh request status
+      fetchEducatorRequest();
     } else {
-      toast.error(data.message)
+      toast.error(data.message);
     }
 
   } catch (error) {
-    toast.error(error.message)
+    toast.error(error.message);
   }
 }
 
@@ -59,7 +78,19 @@ const becomeEducator = async ()=>{
       <div className='hidden md:flex items-center gap-5 text-gray-500'>
         <div className='flex items-center gap-5'>
           { user && <> 
-          <button onClick={becomeEducator}>{isEducator ? 'Educator Dashboard' : 'Become Educator'} </button>
+          {isEducator ? (
+  <button onClick={() => navigate("/educator")}>
+    Educator Dashboard
+  </button>
+) : educatorRequestStatus === "pending" ? (
+  <button className="text-yellow-600 cursor-default">
+    Verification Pending
+  </button>
+) : (
+  <button onClick={becomeEducator}>
+    Become Educator
+  </button>
+)}
           <Link to='/my-enrollments'>My Enrollments</Link>
           </>
           }
@@ -75,7 +106,19 @@ const becomeEducator = async ()=>{
         <div>
           { user && 
           <>
-        <button onClick={becomeEducator}>{isEducator ? 'Educator Dashboard' : 'Become Educator'} </button>
+        {isEducator ? (
+  <button onClick={() => navigate("/educator")}>
+    Educator Dashboard
+  </button>
+) : educatorRequestStatus === "pending" ? (
+  <button className="text-yellow-600 cursor-default">
+    Verification Pending
+  </button>
+) : (
+  <button onClick={becomeEducator}>
+    Become Educator
+  </button>
+)}
         <Link to='/my-enrollments'>My Enrollments</Link>
         </>
         }

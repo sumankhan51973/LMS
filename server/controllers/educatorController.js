@@ -4,6 +4,33 @@ import cloudinary from '../configs/cloudinary.js'
 import { Purchase } from '../models/Purchase.js'
 import User from '../models/User.js'
 import mongoose from 'mongoose'
+import EducatorRequest from "../models/EducatorRequest.js";
+
+export const getRequestStatus = async (req, res) => {
+  try {
+    const userId = req.auth().userId;
+
+    const request = await EducatorRequest.findOne({ userId });
+
+    if (!request) {
+      return res.json({
+        success: true,
+        status: null,
+      });
+    }
+
+    res.json({
+      success: true,
+      status: request.status,
+    });
+
+  } catch (error) {
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 // update user role to educator
 export const updateRoleToEducator = async (req, res) => {
@@ -21,6 +48,51 @@ res.json({ success: true, message: 'You can publish a course now '})
         res.json({ success: false, message: error.message })
     }
 
+}
+
+// Student requests to become an educator
+export const requestEducator = async (req, res) => {
+  try {
+    const userId = req.auth().userId;
+
+    // Find user
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Check if already requested
+    const existingRequest = await EducatorRequest.findOne({ userId });
+
+    if (existingRequest) {
+      return res.json({
+        success: false,
+        message: "You have already submitted a request.",
+      });
+    }
+
+    // Save request
+    await EducatorRequest.create({
+      userId,
+      name: user.name,
+      email: user.email,
+    });
+
+    res.json({
+      success: true,
+      message: "Your educator request has been sent to the admin.",
+    });
+
+  } catch (error) {
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
 }
 
 // Add new Course

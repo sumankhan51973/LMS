@@ -14,15 +14,19 @@ import Navbar from './components/student/Navbar'
 import MyEnrollments from './pages/student/MyEnrollments'
 import "quill/dist/quill.snow.css";
 import { ToastContainer } from 'react-toastify';
+import AdminRequests from './pages/admin/AdminRequests'
+import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
+import EducatorProtectedRoute from "./components/educator/EducatorProtectedRoute";
 
 const App = () => {
 
 const isEducationRoute = useMatch('/educator/*')
+const isAdminRoute = useMatch('/admin/*')
 
   return (
     <div className='text-default min-h-screen bg-white'>
     <ToastContainer />
-      {!isEducationRoute && <Navbar />}
+      {!isEducationRoute && !isAdminRoute && <Navbar />}
       <Routes>
         <Route path='/' element={<Home />}/>
         <Route path='/course-list' element={<CoursesList />}/>
@@ -32,13 +36,28 @@ const isEducationRoute = useMatch('/educator/*')
         <Route path='/player/:courseId' element={<Player />}/>
         <Route path='/loading/:path' element={<Loading />}/>
 
-        <Route path='/educator' element={<Educator />}>
-          <Route path='/educator' element={<Dashboard />}/>
-          <Route path='add-course' element={<AddCourse />}/>
-          <Route path='my-courses' element={<MyCourses />}/>
-          <Route path='student-enrolled' element={<StudentsEnrolled />}/>
+        <Route
+  path="/admin"
+  element={
+    <AdminProtectedRoute>
+      <AdminRequests />
+    </AdminProtectedRoute>
+  }
+/>
 
-        </Route>
+   <Route
+  path="/educator"
+  element={
+    <EducatorProtectedRoute>
+      <Educator />
+    </EducatorProtectedRoute>
+  }
+>
+    <Route index element={<Dashboard />} />
+    <Route path='add-course' element={<AddCourse />} />
+    <Route path='my-courses' element={<MyCourses />} />
+    <Route path='student-enrolled' element={<StudentsEnrolled />} />
+</Route>
       </Routes>
     </div>
   )

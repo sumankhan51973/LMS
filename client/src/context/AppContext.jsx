@@ -20,6 +20,7 @@ export const AppContextProvider = (props)=>{
 
     const [allCourses, setAllCourses] = useState([])
     const [isEducator, setIsEducator] = useState(false)
+    const [educatorRequestStatus, setEducatorRequestStatus] = useState(null)
     const [enrolledCourses, setEnrolledCourses] = useState([])
     const [userData, setUserData] = useState(null)
 
@@ -61,6 +62,29 @@ export const AppContextProvider = (props)=>{
 
     } catch (error) {
         toast.error(error.message);
+    }
+};
+
+const fetchEducatorRequest = async () => {
+    try {
+
+        const token = await getToken();
+
+        const { data } = await axios.get(
+            backendUrl + "/api/educator/request-status",
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        if (data.success) {
+            setEducatorRequestStatus(data.status);
+        }
+
+    } catch (error) {
+        console.log(error);
     }
 };
     //Function to calculate average rating of course
@@ -132,18 +156,41 @@ export const AppContextProvider = (props)=>{
         fetchAllCourses()
     },[])
 
-    useEffect(() => {
+  useEffect(() => {
     if (isLoaded && user) {
         fetchUserData();
         fetchUserEnrolledCourses();
+        fetchEducatorRequest();
     }
 }, [isLoaded, user]);
             
-    const value = {
+   const value = {
+    currency,
+    allCourses,
+    navigate,
+    calculateRating,
 
-        currency, allCourses, navigate, calculateRating, isEducator , setIsEducator, calculateNoOfLectures, calculateCourseDuration, calculateChapterTime,enrolledCourses, fetchUserEnrolledCourses,
-        backendUrl, userData, setUserData, getToken, fetchAllCourses
-    }
+    isEducator,
+    setIsEducator,
+
+    educatorRequestStatus,
+    setEducatorRequestStatus,
+    fetchEducatorRequest,
+
+    calculateNoOfLectures,
+    calculateCourseDuration,
+    calculateChapterTime,
+
+    enrolledCourses,
+    fetchUserEnrolledCourses,
+
+    backendUrl,
+    userData,
+    setUserData,
+
+    getToken,
+    fetchAllCourses
+}
 
     return (
         <AppContext.Provider value={value}>
