@@ -8,34 +8,42 @@ import { clerkMiddleware } from '@clerk/express'
 import courseRouter from './routes/courseRoute.js'
 import userRouter from './routes/userRoutes.js'
 import './configs/cloudinary.js'
-import adminRouter from "./routes/adminRoutes.js";
+import adminRouter from './routes/adminRoutes.js'
 
-// Initialize Express
 const app = express()
 
-// Connect Database
 await connectDB()
 
-// Middlewares
+// CORS
 app.use(cors())
+
+// ✅ Stripe webhook BEFORE express.json()
+app.post(
+  '/stripe',
+  express.raw({ type: 'application/json' }),
+  stripeWebhooks
+)
+
+// ✅ JSON parser AFTER webhook
 app.use(express.json())
+
+// Clerk
 app.use(clerkMiddleware())
 
 // Routes
 app.get('/', (req, res) => {
-    res.send("API Working")
+  res.send('API Working')
 })
 
 app.post('/clerk', clerkWebhooks)
-app.use('/api/educator', express.json(), educatorRouter)
-app.use('/api/course', express.json(), courseRouter)
-app.use('/api/user', express.json(), userRouter)
-app.use('/api/admin', express.json(), adminRouter)
-app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhooks)
 
-// Port
+app.use('/api/educator', educatorRouter)
+app.use('/api/course', courseRouter)
+app.use('/api/user', userRouter)
+app.use('/api/admin', adminRouter)
+
 const PORT = process.env.PORT || 5000
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })
