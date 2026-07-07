@@ -74,7 +74,7 @@ export const purchaseCourse = async (req, res) => {
 
             return res.json({
                 success: true,
-                message: 'Free course enrolled successfully'
+                message: 'Course enrolled successfully'
             })
         }
 

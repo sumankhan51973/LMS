@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { AppContext } from '../../context/AppContext'
 import Loading from '../../components/student/Loading'
 import { assets } from '../../assets/assets'
@@ -14,6 +14,7 @@ import { toast } from 'react-toastify'
 const CourseDetails = () => {
 
   const {id} = useParams()
+  const navigate = useNavigate();
   const [courseData, setCourseData] = useState(null)
   const [openSections, setOpenSections] = useState({})
   const [isAlreadyEnrolled, setIsAlreadyEnrolled] = useState(false)
@@ -35,26 +36,47 @@ const CourseDetails = () => {
   }
 }
 
-const enrollCourse = async ()=>{
+const enrollCourse = async () => {
   try {
     if (!userData) {
-      return toast.warn('Login to Enroll')
+      return toast.warn("Login to Enroll");
     }
-    if(isAlreadyEnrolled){
-      return toast.warn('Already Enrolled')
+
+    if (isAlreadyEnrolled) {
+      return toast.warn("Already Enrolled");
     }
+
     const token = await getToken();
 
-    const {data} = await axios.post(backendUrl + '/api/user/purchase',{courseId: courseData._id}, {headers : { Authorization : `Bearer ${token}`}})
-    if(data.success){
-      const {session_url} = data
-      window.location.replace(session_url)
-    }else{
-      toast.error(data.message)
+    const { data } = await axios.post(
+      backendUrl + "/api/user/purchase",
+      { courseId: courseData._id },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!data.success) {
+      return toast.error(data.message);
     }
 
+    // Paid Course
+    if (data.session_url) {
+      return window.location.replace(data.session_url);
+    }
+
+    // Free Course
+toast.success(data.message);
+
+// Wait 2 seconds before reloading
+setTimeout(() => {
+   navigate("/my-enrollments");
+}, 1500);
+
   } catch (error) {
-    toast.error(error.message)
+    toast.error(error.message);
   }
 }
 
